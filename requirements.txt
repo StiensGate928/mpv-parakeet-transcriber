@@ -1,0 +1,9 @@
+nemo_toolkit[asr]>=1.21.0 # Or your specific working version
+soundfile
+librosa
+# Add torch, torchaudio if not covered by nemo_toolkit[asr] for your setup
+einops
+pyyaml
+# Optional: if you implement a lucidrains backend later
+# BS-RoFormer
+spacy>=3.7,<4
