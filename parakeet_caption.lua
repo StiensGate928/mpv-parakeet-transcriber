@@ -159,8 +159,8 @@ local sep_fast = {
 }
 
 local sep_slow = {
-    cfg   = weights_dir .. "/roformer/karaoke_viperx/config_mel_band_roformer_karaoke.yaml",
-    ckpt  = weights_dir .. "/roformer/karaoke_viperx/mel_band_roformer_karaoke_aufr33_viperx_sdr_10.1956.ckpt",
+    cfg   = weights_dir .. "/roformer/bs_viperx/bs_roformer_ep_317_sdr_12.9755.yaml",
+    ckpt  = weights_dir .. "/roformer/bs_viperx/bs_roformer_ep_317_sdr_12.9755.ckpt",
     target = "vocals"
 }
 
@@ -177,7 +177,10 @@ local seg_args = { "--segmenter","word","--max_words","12","--max_duration","6.0
 -- @example "anlmdn" (Audio Non-Local Means de-noiser)
 -- @example "afftdn" (FFT-based de-noiser)
 -- @example "loudnorm,anlmdn" (Apply multiple filters, comma-separated)
-local ffmpeg_audio_filters = "loudnorm=I=-16:LRA=7:TP=-1.5"
+local ffmpeg_audio_filters =
+  "highpass=f=80:order=2,arnndn=m=rnnoise-model-or-preset,afftdn=nf=-28:nr=10:nt=w,deesser,acompressor=ratio=3:threshold=-18dB:attack=5:release=60,loudnorm=I=-16:LRA=7:TP=-3"
+-- -af "highpass=f=80, afftdn=nr=12:nf=-50, agate=threshold=0.02:range=0.06:ratio=2:attack=20:release=250, dynaudnorm=g=31:f=250, alimiter=limit=0.95"
+
 -- ###################################
 
 --- Table to store paths of temporary files for cleanup on MPV shutdown.
@@ -1003,4 +1006,3 @@ mp.register_event("shutdown", function()
     if attach_timer then attach_timer:kill(); attach_timer = nil end
     log("info", "Parakeet shutdown cleanup finished.")
 end)
-
